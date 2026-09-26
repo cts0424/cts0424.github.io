@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Howard Chen’s cross-camera tracking and open-set Re-ID project: system pipeline, tracking evaluation, identity decisions, and gallery contamination.">
+  <title>Cross-Camera Person Tracking and Open-Set Re-ID | Howard Chen</title>
+  <link rel="alternate" hreflang="en" href="reid.html">
+  <link rel="alternate" hreflang="zh-Hant" href="reid-zh.html">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .project-nav { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 2rem; }
+    .project-nav a { color: inherit; text-underline-offset: .25em; }
+    .detail-copy { max-width: 72ch; }
+    .detail-copy p, .detail-copy li { line-height: 1.8; }
+    .detail-copy ul { padding-left: 1.4em; }
+    .detail-copy li + li { margin-top: .5em; }
+    .pipeline { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px; }
+    .pipeline span { position: relative; display: grid; place-items: center; min-width: 0; }
+    .pipeline span + span::before {
+      content: '→';
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      width: 24px;
+      margin: 0;
+      transform: translateY(-50%);
+      color: #6d8b2a;
+      font-size: 20px;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .pipeline { grid-template-columns: 1fr; gap: 34px; }
+      .pipeline span + span::before {
+        left: 50%;
+        top: -29px;
+        transform: translateX(-50%);
+        content: '↓';
+      }
+    }
+    .result-table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .result-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-variant-numeric: tabular-nums; }
+    .result-table th, .result-table td { padding: .8rem 1rem; border-bottom: 1px solid currentColor; text-align: left; }
+    .result-table thead th { border-bottom-width: 2px; }
+    .result-table caption { text-align: left; margin-bottom: .75rem; font-weight: 700; }
+    .result-table td:first-child { font-weight: 700; }
+    .detail-note { max-width: 72ch; font-size: .92rem; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="../index.html" aria-label="Howard Chen, return to home">
+      <span class="brand-mark">CT</span><span>Howard Chen <small>CHEN TAT SIANG</small></span>
+    </a>
+    <div class="header-actions">
+    <a class="back-link" href="../index.html#projects">← Projects</a>
+      <span class="language-switch" aria-label="Language"><a href="reid.html" data-lang-switch aria-current="page" lang="en">EN</a><span aria-hidden="true">/</span><a href="reid-zh.html" data-lang-switch lang="zh-Hant">中文</a></span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="detail-hero wrap" aria-labelledby="project-title">
+      <p class="eyebrow">RESEARCH PROJECT / COMPUTER VISION</p>
+      <h1 id="project-title">Cross-Camera Person Tracking<br><em>and Open-Set Re-ID</em></h1>
+      <p class="lead">Built a system spanning person detection, single-camera tracking, and identity association across track fragments and cameras. I use annotated data and controlled experiments to examine where identity mismatches arise.</p>
+      <div class="tag-row" aria-label="Technologies used">
+        <span>YOLOv5s / YOLOv8s</span><span>ByteTrack</span><span>CLIP-ReID</span><span>TrackEval</span>
+      </div>
+      <nav class="project-nav" aria-label="On this page">
+        <a href="#problem">Research Question</a><a href="#system">System Pipeline</a><a href="#evaluation">Local and Global ID Evaluation</a><a href="#open-set">Open-Set Analysis</a><a href="#gallery">Gallery Contamination</a><a href="#next">Next Steps</a>
+      </nav>
+    </section>
+
+    <section id="problem" class="section light" aria-labelledby="problem-title">
+      <div class="wrap detail-grid">
+        <div><p class="eyebrow">01 / PROBLEM</p><h2 id="problem-title">Research Question</h2></div>
+        <div class="detail-copy">
+          <p class="body-large">Can the system maintain a consistent global ID when someone leaves and re-enters the frame or appears on another camera?</p>
+          <p>A single-camera tracker links people across nearby frames. Associating identities across track fragments or cameras also requires comparing appearance features. Similar clothing, distance, occlusion, and overlapping people make that comparison harder.</p>
+          <p>This project also studies the open-set setting: a person may be absent from the existing gallery, so the system must decide whether to reuse a known ID or create a new one.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="system" class="section" aria-labelledby="system-title">
+      <div class="wrap">
+        <p class="eyebrow">02 / SYSTEM</p><h2 id="system-title">Implemented System Pipeline</h2>
+        <div class="pipeline" aria-label="Processing pipeline">
+          <span>Video / Stream</span><span>YOLO Detection</span><span>ByteTrack Tracks</span><span>CLIP-ReID Features</span><span>Gallery Global ID</span>
+        </div>
+        <div class="detail-copy">
+          <ul>
+            <li>YOLO detects people, and ByteTrack links their detections across consecutive frames within each camera into local tracks.</li>
+            <li>CLIP-ReID extracts features from person crops that need an identity decision. The system compares them with gallery features to reuse a global ID or assign a new one.</li>
+            <li>The two-camera pipeline shares one gallery and one set of global IDs. Single-camera tracking evaluation and cross-camera functionality are validated separately.</li>
+          </ul>
+          <p class="detail-note muted">I have also tried OC-SORT, different Re-ID update frequencies, and supplementary ArcFace checks. The analyses below include only experiments with clearly defined scope and results.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="evaluation" class="section light" aria-labelledby="evaluation-title">
+      <div class="wrap">
+        <p class="eyebrow">03 / TRACKING EVALUATION</p><h2 id="evaluation-title">Local and Global ID Evaluation</h2>
+        <div class="detail-copy">
+          <p>I compared ByteTrack local IDs and CLIP-ReID v2.5 global IDs from the same run against 2,661 manually annotated frames. Global IDs improved identity association metrics, while detection accuracy declined because some detections were absent from the global output.</p>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <caption>Local vs. Global tracking results (percentage metrics in %; differences in percentage points)</caption>
+            <thead><tr><th scope="col">Metric</th><th scope="col">Local</th><th scope="col">Global</th><th scope="col">Difference</th></tr></thead>
+            <tbody>
+              <tr><td>HOTA ↑</td><td>50.593</td><td>62.648</td><td>+12.055 pp</td></tr>
+              <tr><td>DetA ↑</td><td>63.277</td><td>57.364</td><td>−5.913 pp</td></tr>
+              <tr><td>AssA ↑</td><td>40.515</td><td>68.467</td><td>+27.952 pp</td></tr>
+              <tr><td>IDF1 ↑</td><td>50.131</td><td>79.768</td><td>+29.637 pp</td></tr>
+              <tr><td>IDSW ↓ (count)</td><td>45</td><td>5</td><td>−40</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="detail-note muted">Single-camera video: 2025-12-04_06-32-41.mp4; TrackEval against the verified ground truth. Global output contains 2,816 fewer boxes than Local (12.70%). This compares actual system outputs, rather than assigning different IDs to identical detections. The script specified yolov5s.pt, but actually loaded Ultralytics yolov5su.pt. Ground-truth annotations with visibility=0 were included in scoring. These results do not directly measure cross-camera accuracy.</p>
+        <div class="detail-copy">
+          <p>An earlier two-camera XCAM60 experiment evaluated cross-camera integration using identity numbers shared by both cameras. Global IDs improved AssA and IDF1 while reducing IDSW and the number of output IDs.</p>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <caption>XCAM60 two-camera results (5 people in ground truth; percentage metrics in %)</caption>
+            <thead><tr><th scope="col">Metric</th><th scope="col">Local</th><th scope="col">Global</th><th scope="col">Difference</th></tr></thead>
+            <tbody>
+              <tr><td>HOTA ↑</td><td>29.29</td><td>65.37</td><td>+36.08 pp</td></tr>
+              <tr><td>DetA ↑</td><td>72.71</td><td>67.93</td><td>−4.78 pp</td></tr>
+              <tr><td>AssA ↑</td><td>11.90</td><td>62.95</td><td>+51.05 pp</td></tr>
+              <tr><td>IDF1 ↑</td><td>21.19</td><td>73.44</td><td>+52.25 pp</td></tr>
+              <tr><td>IDSW ↓ (count)</td><td>65</td><td>28</td><td>−37</td></tr>
+              <tr><td>Output IDs ↓</td><td>59</td><td>12</td><td>−47</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="detail-note muted">This table summarizes an earlier system on different videos. Its two-camera results are not directly comparable with the v2.5 single-camera results above.</p>
+      </div>
+    </section>
+
+    <section id="open-set" class="section" aria-labelledby="open-set-title">
+      <div class="wrap detail-grid">
+        <div>
+          <p class="eyebrow">04 / OPEN-SET</p>
+          <h2 id="open-set-title">Open-Set Identity Decisions</h2>
+        </div>
+
+        <div class="open-map" role="img"
+            aria-label="Gallery map illustration: known identities form nodes; one query matches an existing identity while another lies outside the gallery.">
+          <span class="open-map-caption">IDENTITY GALLERY / LIVE MAP</span>
+
+          <div class="open-map-zone" aria-hidden="true">
+            <span class="open-map-zone-label">KNOWN IDENTITIES</span>
+
+            <span class="open-map-node node-1">G01</span>
+            <span class="open-map-node node-2">G02</span>
+            <span class="open-map-node node-3">G03</span>
+            <span class="open-map-node node-4">G04</span>
+            <span class="open-map-node node-5">G05</span>
+
+            <span class="open-map-line line-1"></span>
+            <span class="open-map-line line-2"></span>
+            <span class="open-map-line line-3"></span>
+          </div>
+
+          <span class="open-map-match-line" aria-hidden="true"></span>
+
+          <div class="open-map-query query-match" aria-hidden="true">
+            <span class="open-map-query-dot"></span>
+            <span class="query-before">QUERY A <small>SEARCHING</small></span>
+            <span class="query-after">G05 <small>MATCHED</small></span>
+          </div>
+
+          <div class="open-map-query query-new" aria-hidden="true">
+            <span class="open-map-query-dot"></span>
+            <span>QUERY B <small>UNKNOWN</small></span>
+          </div>
+
+          <span class="open-map-coordinate">FEATURE SPACE · IDENTITY MATCHING</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="section light" aria-labelledby="gallery-title">
+      <div class="wrap detail-grid">
+        <div>
+          <p class="eyebrow">05 / GALLERY</p>
+          <h2 id="gallery-title">Overlapping People and Gallery Contamination</h2>
+        </div>
+
+        <div class="detail-copy">
+          <p class="body-large">
+            When people overlap, a crop may include part of another person. Using that crop to update the gallery can gradually shift the stored identity feature.
+          </p>
+
+          <figure class="gallery-demo" role="img"
+            aria-label="Gallery contamination illustration: overlapping boxes for G005 and G007 produce a mixed crop. Updating G005 with it shifts its representative feature toward G007.">
+
+            <figcaption>HOW GALLERY CONTAMINATION HAPPENS</figcaption>
+
+            <div class="gallery-demo-source" aria-hidden="true">
+              <div class="gallery-demo-overlap">
+                <span class="gallery-demo-step">01 / OVERLAP</span>
+                <div class="gallery-demo-frame frame-g005">
+                  <span>G005</span>
+                  <i class="gallery-demo-person"></i>
+                </div>
+                <div class="gallery-demo-frame frame-g007">
+                  <span>G007</span>
+                  <i class="gallery-demo-person"></i>
+                </div>
+              </div>
+
+              <span class="gallery-demo-arrow">→</span>
+
+              <div class="gallery-demo-update">
+                <span class="gallery-demo-step">02 / WRONG UPDATE</span>
+                <div class="gallery-demo-crop">
+                  <span>MIXED CROP</span>
+                </div>
+                <small>UPDATE G005 GALLERY</small>
+              </div>
+            </div>
+
+            <div class="gallery-demo-space" aria-hidden="true">
+              <span class="gallery-demo-step">03 / FEATURE DRIFT</span>
+              <span class="gallery-demo-anchor anchor-g005">G005</span>
+              <span class="gallery-demo-anchor anchor-g007">G007</span>
+              <span class="gallery-demo-path"></span>
+              <span class="gallery-demo-prototype">
+                <i></i>
+                <small>G005 PROTOTYPE</small>
+              </span>
+            </div>
+
+            <div class="gallery-demo-foot">
+              <span>OVERLAP</span>
+              <span>→</span>
+              <span>WRONG UPDATE</span>
+              <span>→</span>
+              <span>FEATURE DRIFT</span>
+              <small>Concept illustration</small>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" class="section" aria-labelledby="next-title">
+      <div class="wrap detail-grid">
+        <div><p class="eyebrow">06 / NEXT</p><h2 id="next-title">Current Direction</h2></div>
+        <div class="detail-copy">
+          <p class="body-large">I am continuing the cross-camera tracking and open-set Re-ID work, with a focus on making global IDs more stable when people wear similar clothing or overlap.</p>
+          <p>Next, I plan to validate gallery update strategies against contamination using the existing annotations, and examine how detection quality and feature selection affect identity assignment. This work is planned and is not presented as a completed result.</p>
+          <a class="text-link" href="../index.html#projects">Back to selected projects ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap"><span>© <span id="year"></span> Howard Chen</span><a href="../index.html">Home ↑</a></div></footer>
+  <script src="../assets/main.js"></script>
+</body>
+</html>

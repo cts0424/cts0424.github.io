@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="陳達翔的跨相機人物追蹤與 Open-set Re-ID 專題：系統流程、偵測器比較、未知身分辨識及 Gallery 污染分析。">
+  <title>跨相機人物追蹤與 Open-set Re-ID｜陳達翔</title>
+  <link rel="alternate" hreflang="en" href="reid.html">
+  <link rel="alternate" hreflang="zh-Hant" href="reid-zh.html">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .project-nav { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 2rem; }
+    .project-nav a { color: inherit; text-underline-offset: .25em; }
+    .detail-copy { max-width: 72ch; }
+    .detail-copy p, .detail-copy li { line-height: 1.8; }
+    .detail-copy ul { padding-left: 1.4em; }
+    .detail-copy li + li { margin-top: .5em; }
+    .pipeline { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px; }
+    .pipeline span { position: relative; display: grid; place-items: center; min-width: 0; }
+    .pipeline span + span::before {
+      content: '→';
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      width: 24px;
+      margin: 0;
+      transform: translateY(-50%);
+      color: #6d8b2a;
+      font-size: 20px;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .pipeline { grid-template-columns: 1fr; gap: 34px; }
+      .pipeline span + span::before {
+        left: 50%;
+        top: -29px;
+        transform: translateX(-50%);
+        content: '↓';
+      }
+    }
+    .result-table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+    .result-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-variant-numeric: tabular-nums; }
+    .result-table th, .result-table td { padding: .8rem 1rem; border-bottom: 1px solid currentColor; text-align: left; }
+    .result-table thead th { border-bottom-width: 2px; }
+    .result-table caption { text-align: left; margin-bottom: .75rem; font-weight: 700; }
+    .result-table td:first-child { font-weight: 700; }
+    .detail-note { max-width: 72ch; font-size: .92rem; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳至主要內容</a>
+  <header class="site-header">
+    <a class="brand" href="../index-zh.html" aria-label="陳達翔，返回首頁">
+      <span class="brand-mark">CT</span><span>陳達翔 <small>CHEN TAT SIANG</small></span>
+    </a>
+    <div class="header-actions">
+    <a class="back-link" href="../index-zh.html#projects">← 返回作品集</a>
+      <span class="language-switch" aria-label="語言切換"><a href="reid.html" data-lang-switch lang="en">EN</a><span aria-hidden="true">/</span><a href="reid-zh.html" data-lang-switch aria-current="page" lang="zh-Hant">中文</a></span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="detail-hero wrap" aria-labelledby="project-title">
+      <p class="eyebrow">RESEARCH PROJECT / COMPUTER VISION</p>
+      <h1 id="project-title">跨相機人物追蹤<br><em>與 Open-set Re-ID</em></h1>
+      <p class="lead">建立從人物偵測、單鏡頭追蹤到跨片段與跨鏡頭身分關聯的系統，並透過標註資料與控制實驗，分析身分錯配的來源。</p>
+      <div class="tag-row" aria-label="使用技術">
+        <span>YOLOv5s / YOLOv8s</span><span>ByteTrack</span><span>CLIP-ReID</span><span>TrackEval</span>
+      </div>
+      <nav class="project-nav" aria-label="本頁導覽">
+        <a href="#problem">研究問題</a><a href="#system">系統流程</a><a href="#evaluation">Local 與 Global ID 評估</a><a href="#open-set">Open-set 實驗</a><a href="#gallery">Gallery 污染</a><a href="#next">後續工作</a>
+      </nav>
+    </section>
+
+    <section id="problem" class="section light" aria-labelledby="problem-title">
+      <div class="wrap detail-grid">
+        <div><p class="eyebrow">01 / PROBLEM</p><h2 id="problem-title">研究問題</h2></div>
+        <div class="detail-copy">
+          <p class="body-large">當同一人暫時離開畫面、重新出現，或出現在另一台攝影機時，系統能否維持一致的全域 ID？</p>
+          <p>單鏡頭 tracker 主要處理相鄰影格的短期關聯；跨片段與跨鏡頭的身分判斷則需要比較人物外觀特徵。相似衣著、遠距離、遮擋及人物重疊，會使這項判斷更困難。</p>
+          <p>本專題也研究 Open-set 情境：畫面中的人可能不在既有 Gallery 中，系統必須判斷是沿用已知 ID，還是建立新 ID。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="system" class="section" aria-labelledby="system-title">
+      <div class="wrap">
+        <p class="eyebrow">02 / SYSTEM</p><h2 id="system-title">已實作的系統流程</h2>
+        <div class="pipeline" aria-label="處理流程">
+          <span>影片／串流</span><span>YOLO 人物偵測</span><span>ByteTrack 局部軌跡</span><span>CLIP-ReID 特徵</span><span>Gallery 全域 ID</span>
+        </div>
+        <div class="detail-copy">
+          <ul>
+            <li>以 YOLO 偵測人物框，再由 ByteTrack 將同一鏡頭中連續影格的人物連成局部軌跡。</li>
+            <li>從需要判斷身分的影像裁切中抽取 CLIP-ReID 特徵，與 Gallery 中的身分特徵比對，決定沿用全域 ID 或建立新 ID。</li>
+            <li>已建置雙鏡頭共用 Gallery 的流程，讓兩路影像使用同一套全域 ID；單鏡頭追蹤評估與跨鏡頭功能驗證分別處理。</li>
+          </ul>
+          <p class="detail-note muted">系統曾嘗試 OC-SORT、不同頻率的 Re-ID 更新及 ArcFace 輔助檢查；下方僅列出已有明確實驗範圍與結果的分析。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="evaluation" class="section light" aria-labelledby="evaluation-title">
+      <div class="wrap">
+        <p class="eyebrow">03 / TRACKING EVALUATION</p><h2 id="evaluation-title">Local 與 Global ID 評估</h2>
+        <div class="detail-copy">
+          <p>以同一次執行產生的 ByteTrack local ID 與加入 CLIP-ReID v2.5 的 global ID，對照 2,661 幀人工標註資料。Global 在身份關聯指標上提升，但因部分偵測未進入全域輸出，偵測準確度下降。</p>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <caption>Local 與 Global 追蹤評估結果（百分比指標為 %；差異為百分點）</caption>
+            <thead><tr><th scope="col">指標</th><th scope="col">Local</th><th scope="col">Global</th><th scope="col">差異</th></tr></thead>
+            <tbody>
+              <tr><td>HOTA ↑</td><td>50.593</td><td>62.648</td><td>+12.055 pp</td></tr>
+              <tr><td>DetA ↑</td><td>63.277</td><td>57.364</td><td>−5.913 pp</td></tr>
+              <tr><td>AssA ↑</td><td>40.515</td><td>68.467</td><td>+27.952 pp</td></tr>
+              <tr><td>IDF1 ↑</td><td>50.131</td><td>79.768</td><td>+29.637 pp</td></tr>
+              <tr><td>IDSW ↓（次）</td><td>45</td><td>5</td><td>−40 次</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="detail-note muted">單鏡頭影片：2025-12-04_06-32-41.mp4；TrackEval 對照 verified GT。Global 比 Local 少輸出 2,816 個框（12.70%），因此這是實際系統輸出的比較，並非相同偵測框下只更換 ID 的實驗。腳本指定 yolov5s.pt，實際載入 Ultralytics yolov5su.pt；GT 中 visibility=0 的標註也參與計分。此結果不能直接代表跨鏡頭準確率。</p>
+        <div class="detail-copy">
+          <p>另有一組較早期的 XCAM60 雙鏡頭實驗，使用兩台相機共用的身分編號評估跨鏡頭整合。Global 的 AssA 與 IDF1 提升，IDSW 與輸出 ID 數下降。</p>
+        </div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <caption>XCAM60 雙鏡頭結果（GT 為 5 人；百分比指標為 %）</caption>
+            <thead><tr><th scope="col">指標</th><th scope="col">Local</th><th scope="col">Global</th><th scope="col">差異</th></tr></thead>
+            <tbody>
+              <tr><td>HOTA ↑</td><td>29.29</td><td>65.37</td><td>+36.08 pp</td></tr>
+              <tr><td>DetA ↑</td><td>72.71</td><td>67.93</td><td>−4.78 pp</td></tr>
+              <tr><td>AssA ↑</td><td>11.90</td><td>62.95</td><td>+51.05 pp</td></tr>
+              <tr><td>IDF1 ↑</td><td>21.19</td><td>73.44</td><td>+52.25 pp</td></tr>
+              <tr><td>IDSW ↓（次）</td><td>65</td><td>28</td><td>−37 次</td></tr>
+              <tr><td>輸出 ID 數 ↓</td><td>59</td><td>12</td><td>−47</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="detail-note muted">此表依先前的結果整理，屬不同影片與較早期系統的雙鏡頭實驗，不能與上方 v2.5 單鏡頭結果直接比較。</p>
+      </div>
+    </section>
+
+    <section id="open-set" class="section" aria-labelledby="open-set-title">
+      <div class="wrap detail-grid">
+        <div>
+          <p class="eyebrow">04 / OPEN-SET</p>
+          <h2 id="open-set-title">Open-set 身分判斷</h2>
+        </div>
+
+        <div class="open-map" role="img"
+            aria-label="Gallery 星圖示意：已知身分組成節點，一個查詢人物與既有節點關聯，另一個查詢人物位於 Gallery 之外。">
+          <span class="open-map-caption">IDENTITY GALLERY / LIVE MAP</span>
+
+          <div class="open-map-zone" aria-hidden="true">
+            <span class="open-map-zone-label">KNOWN IDENTITIES</span>
+
+            <span class="open-map-node node-1">G01</span>
+            <span class="open-map-node node-2">G02</span>
+            <span class="open-map-node node-3">G03</span>
+            <span class="open-map-node node-4">G04</span>
+            <span class="open-map-node node-5">G05</span>
+
+            <span class="open-map-line line-1"></span>
+            <span class="open-map-line line-2"></span>
+            <span class="open-map-line line-3"></span>
+          </div>
+
+          <span class="open-map-match-line" aria-hidden="true"></span>
+
+          <div class="open-map-query query-match" aria-hidden="true">
+            <span class="open-map-query-dot"></span>
+            <span class="query-before">QUERY A <small>SEARCHING</small></span>
+            <span class="query-after">G05 <small>MATCHED</small></span>
+          </div>
+
+          <div class="open-map-query query-new" aria-hidden="true">
+            <span class="open-map-query-dot"></span>
+            <span>QUERY B <small>UNKNOWN</small></span>
+          </div>
+
+          <span class="open-map-coordinate">FEATURE SPACE · IDENTITY MATCHING</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="section light" aria-labelledby="gallery-title">
+      <div class="wrap detail-grid">
+        <div>
+          <p class="eyebrow">05 / GALLERY</p>
+          <h2 id="gallery-title">重疊人物與 Gallery 污染</h2>
+        </div>
+
+        <div class="detail-copy">
+          <p class="body-large">
+            人物重疊時，另一人的影像可能混入裁切結果。
+            如果用這張影像更新 Gallery，原本的身分特徵就可能逐漸偏移。
+          </p>
+
+          <figure class="gallery-demo" role="img"
+            aria-label="Gallery 污染示意：G005 與 G007 的人物框重疊，混合的裁切影像被用來更新 G005，使 G005 的代表特徵朝 G007 的方向偏移。">
+
+            <figcaption>HOW GALLERY CONTAMINATION HAPPENS</figcaption>
+
+            <div class="gallery-demo-source" aria-hidden="true">
+              <div class="gallery-demo-overlap">
+                <span class="gallery-demo-step">01 / OVERLAP</span>
+                <div class="gallery-demo-frame frame-g005">
+                  <span>G005</span>
+                  <i class="gallery-demo-person"></i>
+                </div>
+                <div class="gallery-demo-frame frame-g007">
+                  <span>G007</span>
+                  <i class="gallery-demo-person"></i>
+                </div>
+              </div>
+
+              <span class="gallery-demo-arrow">→</span>
+
+              <div class="gallery-demo-update">
+                <span class="gallery-demo-step">02 / WRONG UPDATE</span>
+                <div class="gallery-demo-crop">
+                  <span>MIXED CROP</span>
+                </div>
+                <small>UPDATE G005 GALLERY</small>
+              </div>
+            </div>
+
+            <div class="gallery-demo-space" aria-hidden="true">
+              <span class="gallery-demo-step">03 / FEATURE DRIFT</span>
+              <span class="gallery-demo-anchor anchor-g005">G005</span>
+              <span class="gallery-demo-anchor anchor-g007">G007</span>
+              <span class="gallery-demo-path"></span>
+              <span class="gallery-demo-prototype">
+                <i></i>
+                <small>G005 PROTOTYPE</small>
+              </span>
+            </div>
+
+            <div class="gallery-demo-foot">
+              <span>OVERLAP</span>
+              <span>→</span>
+              <span>WRONG UPDATE</span>
+              <span>→</span>
+              <span>FEATURE DRIFT</span>
+              <small>概念示意</small>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" class="section" aria-labelledby="next-title">
+      <div class="wrap detail-grid">
+        <div><p class="eyebrow">06 / NEXT</p><h2 id="next-title">目前方向</h2></div>
+        <div class="detail-copy">
+          <p class="body-large">延續跨相機人物追蹤與 Open-set Re-ID，優先改善相似衣著和人物重疊時的全域 ID 穩定性。</p>
+          <p>下一步將以現有標註資料驗證 Gallery 抗污染更新策略，並檢查偵測品質、特徵選取與身分指派之間的關係。這些是後續工作，尚未列為已完成成果。</p>
+          <a class="text-link" href="../index-zh.html#projects">返回精選專案 ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap"><span>© <span id="year"></span> 陳達翔</span><a href="../index-zh.html">首頁 ↑</a></div></footer>
+  <script src="../assets/main.js"></script>
+</body>
+</html>

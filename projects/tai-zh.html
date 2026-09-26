@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="陳達翔在 TAI 可信任 AI 評估系統中負責的後端開發：資料模型、權限控管、評估 API、LLM 整合與測試。">
+  <title>TAI 可信任 AI 評估系統｜陳達翔</title>
+  <link rel="alternate" hreflang="en" href="tai.html">
+  <link rel="alternate" hreflang="zh-Hant" href="tai-zh.html">
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/tai.css">
+</head>
+<body class="tai-page">
+  <a class="skip" href="#main">跳至主要內容</a>
+  <header class="site-header">
+    <a class="brand" href="../index-zh.html" aria-label="陳達翔，返回首頁"><span class="brand-mark">CT</span><span>陳達翔 <small>HOWARD CHEN</small></span></a>
+    <div class="header-actions">
+    <a class="back-link" href="../index-zh.html#projects">← 返回作品集</a>
+      <span class="language-switch" aria-label="語言切換"><a href="tai.html" data-lang-switch lang="en">EN</a><span aria-hidden="true">/</span><a href="tai-zh.html" data-lang-switch aria-current="page" lang="zh-Hant">中文</a></span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="detail-hero wrap" aria-labelledby="tai-title">
+      <p class="eyebrow">SOFTWARE ENGINEERING / BACKEND DEVELOPMENT</p>
+      <h1 id="tai-title">TAI 可信任 AI<br><em>評估系統</em></h1>
+      <p class="lead">讓使用者依專案填寫可信任 AI 評估問卷，彙整指標結果並產生報告。我在團隊中負責後端資料模型、驗證與權限、核心 API、LLM 整合及測試除錯。</p>
+      <div class="tag-row" aria-label="使用技術"><span>TypeScript</span><span>Node.js / Express</span><span>Prisma / PostgreSQL</span><span>JWT</span><span>OpenAPI</span><span>Docker</span></div>
+      <nav class="tai-project-nav" aria-label="本頁導覽"><a href="#context">專案目標</a><a href="#flow">使用流程</a><a href="#role">我的工作</a><a href="#design">設計重點</a><a href="#evidence">程式與驗證</a></nav>
+    </section>
+
+    <section id="context" class="section light" aria-labelledby="context-title">
+      <div class="wrap detail-grid">
+        <div><p class="eyebrow">01 / CONTEXT</p><h2 id="context-title">專案目標</h2></div>
+        <div class="tai-prose">
+          <p class="body-large">建立一套可信任 AI 評估系統，讓使用者能透過問卷檢視 AI 系統在不同指標上的表現，並取得可理解的結果與改善方向。</p>
+          <p>系統以 11 項可信任 AI 指標為基礎。一般使用者可建立評估專案、填寫並保存問卷、查看歷史作答，以及取得包含指標分數、視覺化結果與改善建議的報告。管理員則可透過管理介面維護問卷、題目與評估選項，使系統能支援不同問卷版本、題型和指標分類。報告結合 LLM 產生改善建議，系統也以銜接 ICCC 平台為目標。</p>
+          <p class="tai-note">這是軟體工程課程的團隊專案。本頁聚焦我負責的後端工作，包括資料庫模型、身分驗證與權限控管、專案與問卷等 API、作答資料處理、報告資料產出及 LLM 整合；前端介面與整體成果屬於團隊共同完成。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow" class="section" aria-labelledby="flow-title">
+      <div class="wrap">
+        <p class="eyebrow">02 / WORKFLOW</p>
+        <h2 id="flow-title">系統使用流程</h2>
+
+        <h3>一般使用者｜完成可信任 AI 評估</h3>
+        <div class="tai-process" aria-label="一般使用者評估流程">
+          <div><small>01</small>登入並建立評估專案</div>
+          <div><small>02</small>選擇問卷並填寫題目</div>
+          <div><small>03</small>儲存與提交作答</div>
+          <div><small>04</small>檢視報告與歷史紀錄</div>
+        </div>
+
+        <div class="tai-prose">
+          <p>填寫中的答案可先保存；提交後，系統依作答內容產生指標結果與報告，並保留紀錄供日後查閱。</p>
+        </div>
+
+        <h3>管理員｜維護評估內容</h3>
+        <div class="tai-process" aria-label="管理員維護流程">
+          <div><small>01</small>以管理員身分登入</div>
+          <div><small>02</small>管理問卷與版本</div>
+          <div><small>03</small>維護題目、選項與指標</div>
+          <div><small>04</small>提供使用者填答</div>
+        </div>
+
+        <div class="tai-prose">
+          <p>問卷內容更新時，版本與既有作答仍保持對應，讓歷史報告能依當時填寫的題目解讀。</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="role" class="section light" aria-labelledby="role-title">
+      <div class="wrap">
+        <div class="role-heading">
+          <div>
+            <p class="eyebrow">03 / MY ROLE</p>
+            <h2 id="role-title">我的工作</h2>
+          </div>
+          <p class="role-intro">
+            我負責後端開發，將專案、問卷、作答與報告串成可運作的評估流程，
+            並處理資料關聯、權限及前後端介接。
+          </p>
+        </div>
+
+        <div class="role-grid">
+          <article class="role-card role-card-featured">
+            <span class="role-card-number">01 / DATA</span>
+            <h3>讓評估資料有清楚的結構</h3>
+            <p>規劃使用者、專案、問卷版本、題目、作答與報告之間的關聯，並使用 Prisma 定義資料模型，支援不同版本的問卷與作答紀錄。</p>
+            <span class="role-card-tag">Database Modeling · Prisma</span>
+          </article>
+
+          <article class="role-card">
+            <span class="role-card-number">02 / ACCESS</span>
+            <h3>區分使用者與管理員權限</h3>
+            <p>處理登入驗證及 API 權限檢查，讓一般使用者能進行評估，也讓管理員能維護問卷內容。</p>
+            <span class="role-card-tag">Authentication · Authorization</span>
+          </article>
+
+          <article class="role-card">
+            <span class="role-card-number">03 / API</span>
+            <h3>串接問卷與作答流程</h3>
+            <p>負責 Auth、Project、Questionnaire 與 Response API 開發，處理問卷資料取得、答案儲存、提交及相關資料驗證。</p>
+            <span class="role-card-tag">REST API · Response Handling</span>
+          </article>
+
+          <article class="role-card">
+            <span class="role-card-number">04 / REPORT</span>
+            <h3>把作答轉成可閱讀的結果</h3>
+            <p>負責報告資料彙整與指標計分，將結果提供前端呈現，並串接 LLM 產生文字分析與改善建議。</p>
+            <span class="role-card-tag">Scoring · LLM Integration</span>
+          </article>
+
+          <article class="role-card">
+            <span class="role-card-number">05 / DELIVERY</span>
+            <h3>讓功能能被整合與驗證</h3>
+            <p>整理 API 的請求與回應文件，使用測試工具檢查後端功能，並與團隊一起排查前後端整合時遇到的問題。</p>
+            <span class="role-card-tag">API Documentation · Testing</span>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="design" class="section" aria-labelledby="design-title">
+      <div class="wrap">
+        <div class="tai-design-heading">
+          <div>
+            <p class="eyebrow">04 / ENGINEERING</p>
+            <h2 id="design-title">後端設計重點</h2>
+          </div>
+          <p>
+            從保存答案到產生報告，後端需要維持版本對應、檢查操作權限，
+            並把不同題型的作答整理為一致的指標結果。
+          </p>
+        </div>
+
+        <div class="tai-design-path" aria-label="後端資料處理流程">
+          <span>問卷資料</span>
+          <span>作答驗證</span>
+          <span>指標計分</span>
+          <span>報告輸出</span>
+        </div>
+
+        <div class="tai-info-grid">
+          <article class="tai-info-card">
+            <span class="tai-card-index">01 / DATA MODEL</span>
+            <div class="tai-card-symbol" aria-hidden="true">◇</div>
+            <h3>問卷版本與作答關聯</h3>
+            <p>
+              作答需連結到填寫時的問卷版本、題目與選項。即使管理員後來調整問卷，
+              歷史作答與報告仍能對照原本的評估內容。
+            </p>
+            <div class="tai-card-footer">
+              <span>Prisma</span><span>PostgreSQL</span><span>版本對應</span>
+            </div>
+          </article>
+
+          <article class="tai-info-card">
+            <span class="tai-card-index">02 / ACCESS CONTROL</span>
+            <div class="tai-card-symbol" aria-hidden="true">✳</div>
+            <h3>身分驗證與管理權限</h3>
+            <p>
+              先透過 JWT 確認請求者身分，再依 API 操作檢查角色；
+              問卷維護限制管理員使用，評估作答則走一般使用者流程。
+            </p>
+            <div class="tai-card-footer">
+              <span>JWT</span><span>角色檢查</span><span>API 保護</span>
+            </div>
+          </article>
+
+          <article class="tai-info-card">
+            <span class="tai-card-index">03 / EVALUATION</span>
+            <div class="tai-card-symbol" aria-hidden="true">▦</div>
+            <h3>從答案到指標分數</h3>
+            <p>
+              計分前先檢查答案與題目是否對應，並處理不同題型及「不適用」答案；
+              再按指標彙整，提供前端圖表與報告共用的結果資料。
+            </p>
+            <div class="tai-card-footer">
+              <span>答案驗證</span><span>11 項指標</span><span>報告資料</span>
+            </div>
+          </article>
+
+          <article class="tai-info-card">
+            <span class="tai-card-index">04 / INSIGHT</span>
+            <div class="tai-card-symbol" aria-hidden="true">✦</div>
+            <h3>分數之外的改善建議</h3>
+            <p>
+              報告先彙整可供呈現的指標分數，再串接 LLM 產生文字分析與改善建議，
+              讓量化結果和文字內容在同一份報告中呈現。
+            </p>
+            <div class="tai-card-footer">
+              <span>Report API</span><span>LLM</span><span>改善建議</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="section light" aria-labelledby="evidence-title">
+      <div class="wrap">
+        <div class="tai-evidence-heading">
+          <div>
+            <p class="eyebrow">05 / EVIDENCE</p>
+            <h2 id="evidence-title">程式與驗證</h2>
+          </div>
+          <p>
+            從程式結構、API 文件到功能測試，留下可供檢視的後端實作紀錄。
+          </p>
+        </div>
+
+        <div class="tai-evidence-grid">
+          <article class="tai-evidence-card">
+            <span class="tai-evidence-index">01 / SOURCE</span>
+            <h3>後端程式</h3>
+            <p>
+              透過 Express 路由與服務處理驗證、專案、問卷、作答及報告流程；
+              Prisma schema 呈現資料模型與關聯。
+            </p>
+            <span class="tai-evidence-detail">Routes · Services · Prisma Schema</span>
+          </article>
+
+          <article class="tai-evidence-card">
+            <span class="tai-evidence-index">02 / INTERFACE</span>
+            <h3>API 文件與整合</h3>
+            <p>
+              整理各端點的請求、回應及使用方式，作為前後端串接與檢查資料格式的依據。
+            </p>
+            <span class="tai-evidence-detail">API Documentation · Integration</span>
+          </article>
+
+          <article class="tai-evidence-card">
+            <span class="tai-evidence-index">03 / VERIFICATION</span>
+            <h3>功能測試與除錯</h3>
+            <p>
+              使用 Postman 測試後端 API，檢查主要操作流程、輸入資料與錯誤回應，
+              並處理團隊整合時發現的問題。
+            </p>
+            <span class="tai-evidence-detail">Postman · Testing · Debugging</span>
+          </article>
+        </div>
+
+        <div class="tai-evidence-cta">
+          <div class="tai-evidence-cta-copy">
+            <span class="tai-evidence-cta-label">EXPLORE THE CODE</span>
+            <h3>查看 TAI 後端程式庫</h3>
+            <p>閱讀專案程式、資料模型與開發文件，了解評估流程如何在後端實作。</p>
+          </div>
+
+          <a class="tai-evidence-button"
+            href="https://github.com/TAI-trustworthy-ai-lab/backend"
+            target="_blank"
+            rel="noopener noreferrer">
+            前往 GitHub Repository
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <a class="tai-evidence-back" href="../index-zh.html#projects">
+          <span aria-hidden="true">←</span> 返回精選專案
+        </a>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap"><span>© <span id="year"></span> 陳達翔</span><a href="../index-zh.html">首頁 ↑</a></div></footer>
+  <script src="../assets/main.js"></script>
+</body>
+</html>

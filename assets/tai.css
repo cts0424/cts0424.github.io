@@ -1,0 +1,811 @@
+/* TAI 主打卡片：只作用於第二個專案，不影響 Re-ID。 */
+.tai-featured {
+  margin-top: clamp(64px, 8vw, 104px);
+  background: #f0e7da;
+  color: #342720;
+  border: 1px solid #bba58c;
+  border-top: 5px solid #a9643b;
+  border-radius: 20px;
+  box-shadow: 0 24px 55px #33201124;
+}
+.tai-featured .featured-content {
+  background: linear-gradient(145deg, #f8f2e9 0%, #e9dbc6 100%);
+  border-left: 1px solid #b99a76;
+}
+.tai-featured .project-type { color: #9c542d; }
+.tai-featured h3 { color: #32231b; }
+.tai-featured p { color: #55483e; }
+.tai-featured .text-link {
+  color: #a84e1c;
+  border-color: #a84e1c;
+  transition: color .2s, border-color .2s, transform .2s;
+}
+.tai-featured .text-link:hover { color: #71310e; border-color: #71310e; transform: translateX(3px); }
+.tai-featured .metric-grid { border-color: #a98e7255; }
+.tai-featured .metric-grid span { color: #745f51; }
+.tai-featured .tai-capabilities strong {
+  display: inline-block;
+  padding: 4px 8px;
+  width: fit-content;
+  border: 1px solid #ad714c;
+  border-radius: 2px;
+  background: #dfcbb0;
+  color: #7f3d20;
+  box-shadow: inset 1px 1px 0 #fff7e4, inset -2px -2px 2px #9b74575c, 1px 2px 0 #7b533631;
+  font-family: Rockwell, 'Roboto Slab', Georgia, serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .065em;
+  text-shadow: 1px 1px 0 #f8e8d2, -1px -1px 0 #76401a50;
+}
+.tai-featured .tai-capabilities div { gap: 9px; }
+.tai-visual {
+  position: relative;
+  min-height: 480px;
+  display: block;
+  background: radial-gradient(circle at 55% 40%, #68432b, #261a16 76%);
+}
+.tai-visual::before { display: none; }
+.tai-industrial-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.tai-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 64%, #170f0acb 100%);
+}
+.tai-product-plaque, .tai-book-plaque {
+  position: absolute;
+  z-index: 1;
+  padding: 7px 10px;
+  border: 1px solid #ae7446;
+  border-radius: 3px;
+  background: #291b15d9;
+  box-shadow: inset 0 1px 0 #e4b87b5e, 0 6px 16px #100a085c;
+  color: #f3d2a8;
+}
+.tai-product-plaque { top: 17px; left: 17px; }
+.tai-book-plaque { top: 17px; right: 17px; text-align: right; }
+.tai-product-plaque strong, .tai-book-plaque strong { display: block; font-size: 11px; letter-spacing: .04em; }
+.tai-product-plaque small, .tai-book-plaque small { display: block; color: #c9996b; font-size: 8px; letter-spacing: .1em; }
+.tai-object-labels {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 50px;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tai-object-labels span {
+  padding: 4px 8px;
+  border: 1px solid #ca854e;
+  border-radius: 2px;
+  background: #3b261dce;
+  color: #f1c28d;
+  box-shadow: inset 0 1px 0 #f9cf9540;
+  font-family: Rockwell, 'Noto Sans TC', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+.tai-visual-caption {
+  position: absolute;
+  left: 20px;
+  bottom: 19px;
+  z-index: 1;
+  color: #e5b27b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+@media (max-width: 760px) {
+  .tai-featured { margin-top: 56px; }
+  .tai-featured .featured-content { border-left: 0; border-top: 1px solid #b99a76; }
+  .tai-visual { min-height: 390px; }
+  .tai-product-plaque { top: 12px; left: 12px; }
+  .tai-book-plaque { top: 12px; right: 12px; }
+  .tai-product-plaque small { max-width: 120px; line-height: 1.2; }
+  .tai-object-labels { left: 14px; right: 14px; bottom: 46px; }
+  .tai-object-labels span { font-size: 9px; }
+  .tai-visual-caption { left: 15px; bottom: 15px; }
+}
+
+/* 詳情頁 */
+.tai-project-nav { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 30px; }
+.tai-project-nav a { font-size: 13px; font-weight: 700; border-bottom: 1px solid #9cb84f; padding-bottom: 3px; }
+.tai-prose { max-width: 72ch; }
+.tai-prose p, .tai-prose li { line-height: 1.9; }
+.tai-prose ul { padding-left: 1.35em; }
+.tai-prose li + li { margin-top: 9px; }
+.tai-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 38px; }
+.tai-facts div, .tai-info-card { background: #fff; border: 1px solid var(--line); border-radius: 9px; padding: 22px; }
+.tai-facts strong, .tai-facts span { display: block; }
+.tai-facts strong { font-size: 17px; }
+.tai-facts span { margin-top: 5px; color: var(--muted); font-size: 12px; }
+.tai-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 40px 0 25px; }
+.tai-process div { position: relative; padding: 24px 15px; border-radius: 8px; background: var(--dark); color: #fff; font-weight: 700; text-align: center; }
+.tai-process div + div::before { content: '→'; position: absolute; top: 50%; left: -22px; width: 20px; transform: translateY(-50%); color: #6d8b2a; font-size: 20px; }
+.tai-process small { display: block; color: var(--accent); letter-spacing: .12em; }
+.tai-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
+.tai-info-card h3 { font-size: 18px; }
+.tai-info-card p { font-size: 14px; line-height: 1.8; }
+.tai-info-card code { color: #547521; font-size: .9em; }
+.tai-note { max-width: 72ch; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.tai-page .tag-row { margin-top: 26px; }
+@media (max-width: 760px) {
+  .tai-facts, .tai-info-grid, .tai-process { grid-template-columns: 1fr; }
+  .tai-process { gap: 32px; }
+  .tai-process div + div::before { content: '↓'; top: -30px; left: 50%; transform: translateX(-50%); }
+}
+
+/* MY ROLE */
+.role-heading {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(300px, 1.15fr);
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 36px;
+}
+
+.role-heading h2 {
+  margin-bottom: 0;
+}
+
+.role-intro {
+  max-width: 620px;
+  margin: 0 0 4px;
+  color: #52605a;
+  font-size: clamp(16px, 1.6vw, 19px);
+  line-height: 1.85;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.role-card {
+  grid-column: span 2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  padding: clamp(24px, 2.7vw, 34px);
+  overflow: hidden;
+  border: 1px solid rgba(36, 59, 47, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(22, 43, 31, 0.035);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.role-card:nth-child(4),
+.role-card:nth-child(5) {
+  grid-column: span 3;
+  min-height: 250px;
+}
+
+.role-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #a7c46e;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(93, 135, 75, 0.3);
+  box-shadow: 0 18px 38px rgba(22, 43, 31, 0.1);
+}
+
+.role-card:hover::before {
+  transform: scaleX(1);
+}
+
+.role-card-number {
+  display: block;
+  margin-bottom: 42px;
+  color: #718574;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.role-card h3 {
+  margin: 0 0 14px;
+  font-size: clamp(19px, 1.8vw, 23px);
+  line-height: 1.4;
+}
+
+.role-card p {
+  margin: 0 0 28px;
+  color: #52605a;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.role-card-tag {
+  display: block;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(36, 59, 47, 0.12);
+  color: #587247;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.role-card-featured {
+  background: #20362b;
+  border-color: #20362b;
+}
+
+.role-card-featured::after {
+  content: "01";
+  position: absolute;
+  right: -8px;
+  bottom: -55px;
+  color: rgba(255, 255, 255, 0.045);
+  font-size: 240px;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.role-card-featured .role-card-number,
+.role-card-featured .role-card-tag {
+  color: #b9d894;
+}
+
+.role-card-featured h3 {
+  color: #fff;
+}
+
+.role-card-featured p {
+  color: rgba(255, 255, 255, 0.77);
+}
+
+.role-card-featured .role-card-tag {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.role-note {
+  margin: 22px 0 0;
+  color: #718077;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .role-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .role-card,
+  .role-card:nth-child(4),
+  .role-card:nth-child(5) {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 600px) {
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-card,
+  .role-card:nth-child(4),
+  .role-card:nth-child(5) {
+    grid-column: 1;
+    min-height: auto;
+  }
+
+  .role-card-number {
+    margin-bottom: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-card,
+  .role-card::before {
+    transition: none;
+  }
+
+  .role-card:hover {
+    transform: none;
+  }
+}
+
+/* ENGINEERING */
+#design .tai-design-heading {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(300px, 1.1fr);
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 38px;
+}
+
+#design .tai-design-heading h2 {
+  margin-bottom: 0;
+}
+
+#design .tai-design-heading > p {
+  max-width: 610px;
+  margin: 0 0 4px;
+  color: #617067;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.85;
+}
+
+/* Small data-flow line above the cards */
+#design .tai-design-path {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+#design .tai-design-path span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #64776a;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+#design .tai-design-path span:not(:last-child)::after {
+  content: "→";
+  color: #8ea876;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+/* Override the existing info-grid styling within this section */
+#design .tai-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+#design .tai-info-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  padding: clamp(26px, 3vw, 38px);
+  overflow: hidden;
+  border: 1px solid rgba(44, 70, 51, 0.13);
+  border-radius: 16px;
+  background: #f8faf6;
+  box-shadow: 0 8px 30px rgba(27, 48, 34, 0.035);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+#design .tai-info-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #7fa762, #bddb91);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+#design .tai-info-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(87, 132, 76, 0.35);
+  background: #fff;
+  box-shadow: 0 20px 42px rgba(27, 48, 34, 0.09);
+}
+
+#design .tai-info-card:hover::before {
+  transform: scaleX(1);
+}
+
+#design .tai-card-index {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-bottom: 50px;
+  color: #63815e;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+#design .tai-card-symbol {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  color: rgba(80, 121, 74, 0.12);
+  font-size: 75px;
+  line-height: 1;
+  transition: transform 0.4s ease, color 0.4s ease;
+}
+
+#design .tai-info-card:hover .tai-card-symbol {
+  transform: rotate(-12deg) scale(1.12);
+  color: rgba(80, 121, 74, 0.22);
+}
+
+#design .tai-info-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 14px;
+  font-size: clamp(20px, 2vw, 25px);
+  line-height: 1.4;
+}
+
+#design .tai-info-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 28px;
+  color: #59685f;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+#design .tai-card-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(44, 70, 51, 0.12);
+}
+
+#design .tai-card-footer span {
+  padding: 6px 9px;
+  border-radius: 4px;
+  background: rgba(112, 153, 95, 0.11);
+  color: #4c7149;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  #design .tai-design-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  #design .tai-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #design .tai-info-card {
+    min-height: auto;
+  }
+
+  #design .tai-card-index {
+    margin-bottom: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #design .tai-info-card,
+  #design .tai-info-card::before,
+  #design .tai-card-symbol {
+    transition: none;
+  }
+
+  #design .tai-info-card:hover {
+    transform: none;
+  }
+}
+
+/* 05 / EVIDENCE */
+#evidence .tai-evidence-heading {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(300px, 1.1fr);
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 38px;
+}
+
+#evidence .tai-evidence-heading h2 {
+  margin-bottom: 0;
+}
+
+#evidence .tai-evidence-heading > p {
+  max-width: 610px;
+  margin: 0 0 4px;
+  color: #617067;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.85;
+}
+
+#evidence .tai-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+#evidence .tai-evidence-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  padding: clamp(24px, 2.7vw, 34px);
+  overflow: hidden;
+  border: 1px solid rgba(36, 59, 47, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(22, 43, 31, 0.035);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+#evidence .tai-evidence-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #7fa762, #bddb91);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+#evidence .tai-evidence-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(93, 135, 75, 0.35);
+  box-shadow: 0 18px 38px rgba(22, 43, 31, 0.1);
+}
+
+#evidence .tai-evidence-card:hover::before {
+  transform: scaleX(1);
+}
+
+#evidence .tai-evidence-index {
+  display: block;
+  margin-bottom: 42px;
+  color: #63815e;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+#evidence .tai-evidence-card h3 {
+  margin: 0 0 14px;
+  font-size: clamp(19px, 1.8vw, 23px);
+  line-height: 1.4;
+}
+
+#evidence .tai-evidence-card p {
+  margin: 0 0 28px;
+  color: #59685f;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+#evidence .tai-evidence-detail {
+  display: block;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(36, 59, 47, 0.12);
+  color: #587247;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+}
+
+/* GitHub CTA */
+#evidence .tai-evidence-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-top: 22px;
+  padding: clamp(28px, 4vw, 48px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: #20362b;
+  color: #fff;
+}
+
+#evidence .tai-evidence-cta::after {
+  content: "↗";
+  position: absolute;
+  right: 18%;
+  bottom: -95px;
+  color: rgba(255, 255, 255, 0.045);
+  font-size: clamp(180px, 24vw, 320px);
+  line-height: 1;
+  pointer-events: none;
+}
+
+#evidence .tai-evidence-cta-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+#evidence .tai-evidence-cta-label {
+  display: block;
+  margin-bottom: 22px;
+  color: #b9d894;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+#evidence .tai-evidence-cta h3 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(23px, 2.5vw, 32px);
+  line-height: 1.35;
+}
+
+#evidence .tai-evidence-cta p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+#evidence .tai-evidence-button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 52px;
+  padding: 13px 19px;
+  border: 1px solid #b9d894;
+  border-radius: 6px;
+  background: #b9d894;
+  color: #20362b;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+#evidence .tai-evidence-button:hover {
+  transform: translateY(-3px);
+  background: #d1e7b6;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+#evidence .tai-evidence-button span {
+  font-size: 18px;
+  transition: transform 0.25s ease;
+}
+
+#evidence .tai-evidence-button:hover span {
+  transform: translate(2px, -2px);
+}
+
+#evidence .tai-evidence-button:focus-visible,
+#evidence .tai-evidence-back:focus-visible {
+  outline: 3px solid #8dbd6f;
+  outline-offset: 4px;
+}
+
+#evidence .tai-evidence-note {
+  margin: 22px 0 0;
+  color: #718077;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#evidence .tai-evidence-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 28px;
+  color: #476b42;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: gap 0.25s ease, color 0.25s ease;
+}
+
+#evidence .tai-evidence-back:hover {
+  gap: 14px;
+  color: #20362b;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  #evidence .tai-evidence-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #evidence .tai-evidence-card:last-child {
+    grid-column: 1 / -1;
+    min-height: 230px;
+  }
+
+  #evidence .tai-evidence-cta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  #evidence .tai-evidence-heading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  #evidence .tai-evidence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #evidence .tai-evidence-card,
+  #evidence .tai-evidence-card:last-child {
+    grid-column: auto;
+    min-height: auto;
+  }
+
+  #evidence .tai-evidence-index {
+    margin-bottom: 28px;
+  }
+
+  #evidence .tai-evidence-button {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #evidence .tai-evidence-card,
+  #evidence .tai-evidence-card::before,
+  #evidence .tai-evidence-button,
+  #evidence .tai-evidence-button span,
+  #evidence .tai-evidence-back {
+    transition: none;
+  }
+
+  #evidence .tai-evidence-card:hover,
+  #evidence .tai-evidence-button:hover {
+    transform: none;
+  }
+
+  #evidence .tai-evidence-button:hover span {
+    transform: none;
+  }
+}
