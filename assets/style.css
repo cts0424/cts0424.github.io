@@ -2138,3 +2138,14 @@ a:focus-visible, button:focus-visible { outline: 3px solid #83a824; outline-offs
 
   .featured:not(.tai-featured) .camera::after { display: none; }
 }
+/* Align the four TAI labels with the existing animated bars. */
+.tai-featured .tai-metrics-preview.tai-bar-labels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  text-align: center;
+}
+.tai-featured .tai-bar-labels > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

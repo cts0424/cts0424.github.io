@@ -31,8 +31,8 @@
       <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#education">Education</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
+      <a href="#projects">Selected</a>
+      <a href="#experience">Other Projects</a>
       <a href="#skills">Skills</a>
       <a href="#resume">Resume</a>
       <a href="#contact">Contact</a>
@@ -176,79 +176,11 @@
       </div>
     </section>
 
-  <section class="section light" id="experience">
-    <div class="wrap">
-      <p class="eyebrow">03 / EXPERIENCE</p>
-      <h2>研究與實作經歷</h2>
-
-      <div class="experience-grid">
-        <article class="card">
-          <span class="card-index">01</span>
-          <h3>跨相機人物追蹤專題 - 國科會計畫</h3>
-          <p>整合 YOLO、ByteTrack／OC-SORT 與 Re-ID，分析身分切換、Gallery 污染及偵測品質對追蹤的影響。</p>
-          <span class="card-note">進行中 · 國科會計畫／產學合作</span>
-        </article>
-
-        <article class="card">
-          <span class="card-index">02</span>
-          <h3>TAI 可信任 AI 評估系統</h3>
-          <p>於軟體工程課程中負責 TAI 可信任 AI 評估系統的<b>後端開發</b>，設計資料庫模型與 Prisma Schema，實作使用者驗證、權限控管及評估流程 API，並整合 LLM 產生改善建議，完成 API 文件、測試與除錯。</p>
-          <span class="card-note">軟體工程課程 · 團隊專案</span>
-          <a class="text-link"
-            href="https://github.com/TAI-trustworthy-ai-lab"
-            target="_blank"
-            rel="noopener noreferrer">
-            查看 GitHub <span>↗</span>
-          </a>
-        </article>
-
-        <article class="card">
-          <span class="card-index">03</span>
-          <h3>Trip Down Memory Lane｜AI 回憶輔助系統</h3>
-          <p>為長者與家人設計的多媒體應用。使用者可上傳照片，產生回憶故事，並以故事內容建立互動測驗。</p>
-          <span class="card-note">團隊課程小專案 · React／TypeScript／Express</span>
-          <a class="text-link"
-            href="https://github.com/TripDownMemoryLane/TripDownMemoryLane-final"
-            target="_blank"
-            rel="noopener noreferrer">
-            查看 GitHub <span>↗</span>
-          </a>
-        </article>
-
-        <article class="card">
-          <span class="card-index">04</span>
-          <h3>C-to-LLVM IR 編譯器</h3>
-          <p>以 ANTLR4 與 Java 實作 C 語言子集編譯器，完成語法分析、靜態型別檢查與 LLVM IR 生成；支援控制流程、函式呼叫及簡單常數摺疊，並提供 9 個正向與 1 個負向測試案例。</p>
-          <span class="card-note">編譯器課程專案 · ANTLR4／Java／LLVM IR</span>
-          <a class="text-link"
-            href="https://github.com/cts0424/c-subset-to-llvm-ir"
-            target="_blank"
-            rel="noopener noreferrer">
-            查看 GitHub <span>↗</span>
-          </a>
-        </article>
-
-        <article class="card">
-          <span class="card-index">05</span>
-          <h3>保管組學位服借還系統改良</h3>
-          <p>在保管組工讀期間，依櫃台作業需求改良既有 Tkinter／Excel 工具，優化借還登記、狀態驗證與歸還統計流程，並整理可公開的展示版本。</p>
-          <span class="card-note">校內工讀 · 實際作業系統改良</span>
-          <a class="text-link"
-            href="https://github.com/cts0424/graduation-gown-return-system"
-            target="_blank"
-            rel="noopener noreferrer">
-            查看 GitHub <span>↗</span>
-          </a>
-        </article>
-      </div>
-    </div>
-  </section>
-
     <section class="section projects-section" id="projects">
       <div class="wrap">
         <div class="section-top">
           <div>
-            <p class="eyebrow">04 / SELECTED PROJECTS</p>
+            <p class="eyebrow">03 / SELECTED PROJECTS</p>
             <h2>精選專案</h2>
           </div>
         </div>
@@ -310,9 +242,11 @@
                   <span style="height: 45%;"></span>
                   <span style="height: 90%;"></span>
                 </div>
-                <div class="tai-metrics-preview">
-                  <span>安全性 98.2%</span>
-                  <span>合規性 100%</span>
+                <div class="tai-metrics-preview tai-bar-labels">
+                  <span>安全性</span>
+                  <span>公平性</span>
+                  <span>準確性</span>
+                  <span>合規性</span>
                 </div>
               </div>
             </div>
@@ -331,18 +265,63 @@
             <a class="text-link" href="projects/tai-zh.html">閱讀專案詳情 <span aria-hidden="true">↗</span></a>
           </div>
         </article>
-
-
-        <div class="upcoming">
-          <span>UP NEXT</span>
-          <div>
-            <h3>PatchCore 瓶身瑕疵偵測</h3>
-            <p>規劃中的獨立實作專案；完成實驗與展示後更新。</p>
-          </div>
-          <span class="status">規劃中</span>
-        </div>
       </div>
     </section>
+
+  <section class="section light" id="experience">
+    <div class="wrap">
+      <p class="eyebrow">04 / OTHER PROJECTS</p>
+      <h2>其他專案與實作</h2>
+
+      <div class="experience-grid">
+        <article class="card">
+          <span class="card-index">01</span>
+          <h3>Trip Down Memory Lane｜AI 回憶輔助系統</h3>
+          <p>為長者與家人設計的多媒體應用。使用者可上傳照片，產生回憶故事，並以故事內容建立互動測驗。</p>
+          <span class="card-note">團隊課程小專案 · React／TypeScript／Express</span>
+          <a class="text-link"
+            href="https://github.com/TripDownMemoryLane/TripDownMemoryLane-final"
+            target="_blank"
+            rel="noopener noreferrer">
+            查看 GitHub <span>↗</span>
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="card-index">02</span>
+          <h3>C-to-LLVM IR 編譯器</h3>
+          <p>以 ANTLR4 與 Java 實作 C 語言子集編譯器，完成語法分析、靜態型別檢查與 LLVM IR 生成；支援控制流程、函式呼叫及簡單常數摺疊，並提供 9 個正向與 1 個負向測試案例。</p>
+          <span class="card-note">編譯器課程專案 · ANTLR4／Java／LLVM IR</span>
+          <a class="text-link"
+            href="https://github.com/cts0424/c-subset-to-llvm-ir"
+            target="_blank"
+            rel="noopener noreferrer">
+            查看 GitHub <span>↗</span>
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="card-index">03</span>
+          <h3>保管組學位服借還系統改良</h3>
+          <p>在保管組工讀期間，依櫃台作業需求改良既有 Tkinter／Excel 工具，優化借還登記、狀態驗證與歸還統計流程，並整理可公開的展示版本。</p>
+          <span class="card-note">校內工讀 · 實際作業系統改良</span>
+          <a class="text-link"
+            href="https://github.com/cts0424/graduation-gown-return-system"
+            target="_blank"
+            rel="noopener noreferrer">
+            查看 GitHub <span>↗</span>
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="card-index">04 / UP NEXT</span>
+          <h3>PatchCore 瓶身瑕疵偵測</h3>
+          <p>規劃中的獨立實作專案；完成實驗與展示後更新。</p>
+          <span class="card-note">規劃中</span>
+        </article>
+      </div>
+    </div>
+  </section>
 
     <section class="section light" id="skills">
       <div class="wrap">
